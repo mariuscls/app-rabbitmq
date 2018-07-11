@@ -17,3 +17,9 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret: ThisTokenIsNotSoSecretChangeIt
+
+    # Rabbitmq
+    rabbit_hostname:    localhost
+    rabbit_port:        5672
+    rabbit_user:        guest
+    rabbit_pass:        guest

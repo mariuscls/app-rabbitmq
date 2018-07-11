@@ -65,3 +65,69 @@ swiftmailer:
     username: '%mailer_user%'
     password: '%mailer_password%'
     spool: { type: memory }
+
+fos_rest:
+    routing_loader:
+        default_format: json
+    body_listener: true
+    format_listener:
+        rules:
+            - { path: '^/', priorities: ['json','xml'], fallback_format: json, prefer_extension: true }
+    param_fetcher_listener: true
+    view:
+        view_response_listener: 'force'
+        formats:
+            json: true
+            xml: true
+        templating_formats:
+            html: true
+    routing_loader:
+        default_format: json
+    serializer:
+        serialize_null: true
+
+
+
+guzzle:
+    # (de)activate logging/profiler; default: %kernel.debug%
+    logging: true
+
+    clients:
+        postcodes:
+            base_url: "https://postcodes.io/"
+            options:
+                headers:
+                    Accept: "application/json"
+
+old_sound_rabbit_mq:
+    connections:
+        default:
+            host:     '%rabbit_hostname%'
+            port:     5672
+            user:     '%rabbit_user%'
+            password: '%rabbit_pass%'
+            vhost:    '/'
+            lazy:     false
+            connection_timeout: 3
+            read_write_timeout: 3
+
+            # requires php-amqplib v2.4.1+ and PHP5.4+
+            keepalive: false
+
+            # requires php-amqplib v2.4.1+
+            heartbeat: 0
+
+            #requires php_sockets.dll
+            use_socket: false # default false
+    producers:
+        postcodes:
+            connection:       default
+            exchange_options: {name: 'postcodes-queue', type: direct}
+            service_alias:    postcodes # no alias by default
+    consumers:
+        postcodes:
+            connection:       default
+            exchange_options: {name: 'postcodes-queue', type: direct}
+            queue_options:    {name: 'postcodes-queue'}
+            callback:         postcodes_queue_service
+
