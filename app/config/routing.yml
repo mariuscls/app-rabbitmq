@@ -1,3 +1,7 @@
 app:
     resource: '@AppBundle/Controller/'
     type: annotation
+
+postcodes:
+    resource: AppBundle\Controller\PostcodesController
+    type: rest

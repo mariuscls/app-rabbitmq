@@ -33,3 +33,14 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
+
+    postcodes_service:
+          class: AppBundle\Services\PostCodesService
+          public: true
+          arguments: ['@guzzle.client.postcodes']
+
+    #Queue Service
+    postcodes_queue_service:
+          class: AppBundle\Services\Queue\PostCodesQueueService
+          public: true
+          arguments: ['@postcodes_service']
