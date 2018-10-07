@@ -86,18 +86,13 @@ fos_rest:
     serializer:
         serialize_null: true
 
-
-
-guzzle:
+eight_points_guzzle:
     # (de)activate logging/profiler; default: %kernel.debug%
     logging: true
 
     clients:
         postcodes:
             base_url: "https://postcodes.io/"
-            options:
-                headers:
-                    Accept: "application/json"
 
 old_sound_rabbit_mq:
     connections:
@@ -128,6 +123,19 @@ old_sound_rabbit_mq:
         postcodes:
             connection:       default
             exchange_options: {name: 'postcodes-queue', type: direct}
-            queue_options:    {name: 'postcodes-queue'}
-            callback:         postcodes_queue_service
+            queue_options:    {
+                                name: 'postcodes-queue',
+                                arguments:
+                                {
+                                  x-dead-letter-exchange:    ['S', 'postcodes_dead_letter_ex'],
+                                  x-dead-letter-routing-key: ['S', 'postcodes_dead_letter_qu']
+                                }
+                              }
+            callback:         postcodes_consumer_service
+            enable_logger:    true
+        postcodes_dead_letter:
+            connection:       default
+            exchange_options: { name: postcodes_dead_letter_ex, type: direct}
+            queue_options:    { name: postcodes_dead_letter_qu }
+            callback:         postcodes_consumer_dead_letter_service
 
