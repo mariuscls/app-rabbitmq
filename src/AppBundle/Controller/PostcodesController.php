@@ -2,22 +2,24 @@
 
 namespace AppBundle\Controller;
 
-
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 
 class PostcodesController extends Controller
 {
-
+    /**
+     * @param Request $request
+     * @return JsonResponse
+     */
     public function postPostcodesAction(Request $request)
     {
-
         $postcodesProducer = $this->get('old_sound_rabbit_mq.postcodes_producer');
-        $msg = json_decode($request->getContent(),true);
+        $data = json_decode($request->getContent(),true);
         $postcodesProducer->setContentType('application/json');
-        $result = $postcodesProducer->publish(serialize($msg));
+        $postcodesProducer->publish(serialize($data));
 
-        return $result;
+        return new JsonResponse(array('Status' => 'OK'));
     }
 
 }
