@@ -34,13 +34,13 @@ services:
     #     arguments:
     #         $someArgument: 'some_value'
 
-    postcodes_service:
-          class: AppBundle\Services\PostCodesService
+    #Queue Services
+    postcodes_consumer_service:
+          class: AppBundle\Service\Queue\PostCodesConsumerService
           public: true
-          arguments: ['@guzzle.client.postcodes']
+          arguments: ['@eight_points_guzzle.client.postcodes', '@logger']
 
-    #Queue Service
-    postcodes_queue_service:
-          class: AppBundle\Services\Queue\PostCodesQueueService
+    postcodes_consumer_dead_letter_service:
+          class: AppBundle\Service\Queue\PostCodesConsumerDeadLetterService
           public: true
-          arguments: ['@postcodes_service']
+          arguments: ['@eight_points_guzzle.client.postcodes', '@logger']
